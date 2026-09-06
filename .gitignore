@@ -1,0 +1,24 @@
+# Dependencies
+backend/node_modules/
+frontend/node_modules/
+
+# Environment / Secret
+backend/.env
+frontend/.env
+.env
+
+# Build
+frontend/dist/
+
+# Logs
+*.log
+
+# Uploaded Documents
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db
+backend/downloaded-test.pdf
+backend/test-upload.pdf

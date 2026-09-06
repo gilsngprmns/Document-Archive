@@ -1,0 +1,193 @@
+{\rtf1\ansi\deff0
+{\fonttbl{\f0 Calibri;}{\f1 Consolas;}}
+\viewkind4\uc1
+\pard\sa240\qc\b\fs32 PANDUAN SETUP SISTEM PENGARSIPAN DOKUMEN\par
+\pard\sa120\qc\fs22 Untuk Laptop User / Komputer Client\par
+\pard\sa240\qc\i\fs18 Versi 1.0 - 06 September 2026\i0\par
+\pard\sa180\fs22\b 1. Gambaran Sistem\b0\par
+Sistem terdiri dari tiga bagian:\par
+\tab 1. Frontend React + Vite sebagai tampilan aplikasi.\par
+\tab 2. Backend Node.js + Express sebagai API.\par
+\tab 3. PostgreSQL sebagai database.\par
+\par
+Untuk penggunaan satu laptop, frontend, backend, dan PostgreSQL dapat dipasang pada laptop yang sama. Jika laptop user hanya sebagai client di jaringan kantor, backend dan database tetap berjalan pada komputer server, sedangkan laptop user hanya membuka URL frontend dari server.\par
+\par
+\pard\sa180\fs22\b 2. Software yang Dibutuhkan\b0\par
+Install software berikut pada laptop yang menjalankan aplikasi:\par
+\tab - Node.js LTS: https://nodejs.org\par
+\tab - PostgreSQL: https://www.postgresql.org/download/windows/\par
+\tab - Git (opsional): https://git-scm.com/download/win\par
+\tab - Microsoft Word untuk membuka panduan ini.\par
+\par
+Saat instalasi PostgreSQL, catat password user postgres. Password ini diperlukan pada file .env backend.\par
+\par
+\pard\sa180\fs22\b 3. Ekstrak File Project\b0\par
+1. Terima file ZIP project dari administrator.\par
+2. Klik kanan file ZIP, pilih Extract All.\par
+3. Pilih folder sederhana, contoh:\par
+\f1 C:\\App_Arsip_Dokumen\f0\par
+4. Pastikan struktur folder seperti berikut:\par
+\f1 C:\\App_Arsip_Dokumen\par
+  backend\par
+    database\\schema.sql\par
+    DATABASE_SETUP.md\par
+    package.json\par
+    .env.example\par
+    src\par
+    uploads\par
+  frontend\par
+    package.json\par
+    src\par
+\f0\par
+\par
+Jangan menghapus folder backend\\uploads. Folder tersebut digunakan untuk menyimpan file hasil upload.\par
+\par
+\pard\sa180\fs22\b 4. Buat Database PostgreSQL\b0\par
+Buka SQL Shell (psql) atau pgAdmin Query Tool sebagai user postgres. Jalankan:\par
+\f1 CREATE DATABASE Sistem_pengarsipan;\f0\par
+\par
+Jika muncul pesan database sudah ada, lanjutkan ke langkah berikutnya.\par
+\par
+Import schema dan data awal. Buka Command Prompt, lalu jalankan:\par
+\f1 cd /d C:\\App_Arsip_Dokumen\\backend\par
+psql -U postgres -d Sistem_pengarsipan -f database\\schema.sql\f0\par
+\par
+Masukkan password PostgreSQL jika diminta. Schema akan membuat tabel roles, seksi, users, kategori, dokumen, dan log_aktivitas. Data awal role, seksi, dan kategori juga dibuat.\par
+\par
+Jika perintah psql tidak dikenali, gunakan pgAdmin:\par
+1. Buka pgAdmin.\par
+2. Pilih database Sistem_pengarsipan.\par
+3. Buka Query Tool.\par
+4. Buka file backend\\database\\schema.sql.\par
+5. Klik Execute.\par
+\par
+\pard\sa180\fs22\b 5. Konfigurasi Backend\b0\par
+Buka Command Prompt dan jalankan:\par
+\f1 cd /d C:\\App_Arsip_Dokumen\\backend\par
+copy .env.example .env\f0\par
+\par
+Buka file backend\\.env dengan Notepad atau VS Code. Sesuaikan isinya:\par
+\f1 PORT=5000\par
+DB_HOST=localhost\par
+DB_PORT=5432\par
+DB_USER=postgres\par
+DB_PASSWORD=PASSWORD_POSTGRESQL\par
+DB_NAME=Sistem_pengarsipan\par
+JWT_SECRET=buat-secret-acak-yang-panjang\par
+JWT_EXPIRES_IN=1d\par
+ADMIN_NAME=Administrator\par
+ADMIN_USERNAME=admin\par
+ADMIN_EMAIL=admin@localhost\par
+ADMIN_PASSWORD=Admin123!\f0\par
+\par
+Ganti PASSWORD_POSTGRESQL dengan password PostgreSQL pada laptop tersebut. Jangan gunakan tanda kutip dan jangan beri spasi di sekitar tanda sama dengan.\par
+\par
+\pard\sa180\fs22\b 6. Install Dependency dan Buat Admin\b0\par
+Di Command Prompt backend:\par
+\f1 cd /d C:\\App_Arsip_Dokumen\\backend\par
+npm install\par
+npm run seed:admin\f0\par
+\par
+Jika berhasil, akun admin dapat digunakan:\par
+\tab Username: admin\par
+\tab Password: Admin123!\par
+\par
+Password admin sebaiknya segera diganti setelah login pertama.\par
+\par
+\pard\sa180\fs22\b 7. Jalankan Backend\b0\par
+Buka Command Prompt pertama:\par
+\f1 cd /d C:\\App_Arsip_Dokumen\\backend\par
+npm run dev\f0\par
+\par
+Output yang diharapkan:\par
+\f1 PostgreSQL connected\par
+Role admin dan staff siap digunakan\par
+Server berjalan di http://localhost:5000\f0\par
+\par
+Biarkan jendela Command Prompt ini tetap terbuka. Tes backend dengan membuka browser:\par
+\f1 http://localhost:5000/\f0\par
+\par
+Response yang benar berisi:\par
+\f1 {"success":true,"message":"API Sistem Pengarsipan Dokumen berjalan"}\f0\par
+\par
+\pard\sa180\fs22\b 8. Install dan Jalankan Frontend\b0\par
+Buka Command Prompt kedua:\par
+\f1 cd /d C:\\App_Arsip_Dokumen\\frontend\par
+npm install\par
+npm run dev\f0\par
+\par
+Buka URL yang tampil di terminal, biasanya:\par
+\f1 http://localhost:5173\f0\par
+\par
+Biarkan Command Prompt frontend tetap terbuka selama aplikasi digunakan.\par
+\par
+\pard\sa180\fs22\b 9. Login dan Membuat User Staff\b0\par
+1. Buka http://localhost:5173.\par
+2. Login dengan akun admin.\par
+3. Buka menu Manajemen pengguna.\par
+4. Klik Tambah pengguna.\par
+5. Isi nama, username, email, dan password minimal 8 karakter.\par
+6. Pilih role Staff.\par
+7. Pilih seksi staff.\par
+8. Klik Buat pengguna.\par
+\par
+Staff hanya dapat mengupload, mengubah, dan mengarsipkan dokumen pada seksinya sendiri. Untuk sementara, semua staff dapat melihat dan mengunduh dokumen semua seksi sesuai kebijakan aplikasi saat ini.\par
+\par
+\pard\sa180\fs22\b 10. Jika Laptop User Berbeda dari Laptop Server\b0\par
+Jika backend berjalan di komputer lain, jangan gunakan localhost dari laptop user.\par
+\par
+Pada komputer server, cari IP dengan:\par
+\f1 ipconfig\f0\par
+\par
+Contoh IP server: 192.168.1.10. Frontend harus memakai API server:\par
+\f1 http://192.168.1.10:5000/api\f0\par
+\par
+Pastikan backend berjalan pada host yang dapat diakses jaringan dan Windows Firewall mengizinkan port 5000 serta 5173. Untuk penggunaan LAN, jalankan frontend dengan:\par
+\f1 npm run dev -- --host 0.0.0.0\f0\par
+\par
+User membuka:\par
+\f1 http://192.168.1.10:5173\f0\par
+\par
+Jangan membuka port PostgreSQL 5432 ke internet. Database cukup diakses backend pada komputer server.\par
+\par
+\pard\sa180\fs22\b 11. Troubleshooting\b0\par
+\b Error: Could not read package.json\b0\par
+Pastikan Command Prompt berada pada folder project yang benar:\par
+\f1 cd /d C:\\App_Arsip_Dokumen\\frontend\f0\par
+atau:\par
+\f1 cd /d C:\\App_Arsip_Dokumen\\backend\f0\par
+\par
+\b Error: password authentication failed for user postgres\b0\par
+Periksa DB_PASSWORD pada backend\\.env. Isinya harus sama dengan password PostgreSQL.\par
+\par
+\b Error: database Sistem_pengarsipan does not exist\b0\par
+Buat database lalu ulangi import schema pada langkah 4.\par
+\par
+\b Error: port 5000 already in use\b0\par
+Tutup backend yang masih berjalan atau ubah PORT pada .env. Frontend harus memakai port backend yang baru.\par
+\par
+\b Error: Network Error pada frontend\b0\par
+Pastikan backend aktif, URL API benar, dan firewall mengizinkan koneksi. Jika laptop berbeda, jangan memakai localhost sebagai URL API.\par
+\par
+\b File upload tidak ditemukan\b0\par
+Pastikan folder backend\\uploads ada. Jangan menghapus folder tersebut.\par
+\par
+\pard\sa180\fs22\b 12. File yang Tidak Boleh Dibagikan\b0\par
+Jangan memasukkan file berikut ke ZIP yang dibagikan:\par
+\tab - backend\\.env\par
+\tab - backend\\node_modules\par
+\tab - frontend\\node_modules\par
+\tab - password PostgreSQL\par
+\par
+File .env.example boleh dibagikan karena tidak berisi password asli.\par
+\par
+\pard\sa180\fs22\b 13. Urutan Singkat Setiap Hari\b0\par
+1. Pastikan PostgreSQL berjalan.\par
+2. Buka terminal backend dan jalankan npm run dev.\par
+3. Buka terminal frontend dan jalankan npm run dev.\par
+4. Buka http://localhost:5173.\par
+5. Login menggunakan akun masing-masing.\par
+6. Setelah selesai, logout dari aplikasi dan tutup terminal jika diperlukan.\par
+\par
+\pard\sa240\qc\i Dokumen ini dapat dibuka dengan Microsoft Word dan disimpan ulang sebagai .docx melalui Save As.\i0\par
+}
