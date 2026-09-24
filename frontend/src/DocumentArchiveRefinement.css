@@ -1,0 +1,226 @@
+.document-archive-page {
+  width: min(1380px, calc(100% - 92px));
+  padding: 42px 0 60px;
+}
+
+.archive-page-heading {
+  align-items: flex-end;
+  gap: 28px;
+  margin-bottom: 24px;
+}
+
+.archive-page-heading h1 {
+  font-size: 34px;
+  line-height: 1.1;
+}
+
+.archive-page-heading .subheading {
+  max-width: 520px;
+}
+
+.archive-heading-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.archive-total {
+  min-width: 98px;
+  text-align: center;
+  border: 1px solid #c9e8e1;
+  background: #edf9f6;
+  padding: 11px 14px;
+}
+
+.archive-heading-actions .secondary-button,
+.archive-heading-actions .primary-button {
+  min-height: 38px;
+  white-space: nowrap;
+}
+
+.document-filters {
+  grid-template-columns: minmax(220px, 1fr) repeat(4, minmax(130px, max-content));
+  align-items: center;
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #e9eeee;
+  border-radius: 9px;
+  background: #fff;
+  box-shadow: 0 8px 22px rgba(16, 44, 56, .05);
+}
+
+.document-filters .search-box {
+  min-height: 38px;
+  background: #fbfdfd;
+}
+
+.document-filters select {
+  min-height: 38px;
+  background-color: #fbfdfd;
+}
+
+.archive-table-panel {
+  border: 1px solid #e9eeee;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(16, 44, 56, .06);
+}
+
+.archive-table-head {
+  padding: 20px 24px;
+  background: #fbfdfd;
+}
+
+.archive-table-head span {
+  font-size: 13px;
+}
+
+.archive-document-list {
+  padding: 4px 12px;
+}
+
+.archive-document-row {
+  min-height: 74px;
+  padding: 14px 12px;
+  border-radius: 6px;
+  transition: background .15s ease, transform .15s ease;
+}
+
+.archive-document-row:hover {
+  background: #f2faf8;
+  transform: translateX(2px);
+}
+
+.archive-document-info strong {
+  font-size: 12px;
+}
+
+.archive-document-info span,
+.archive-document-info small {
+  font-size: 9px;
+}
+
+.archive-document-meta {
+  width: 112px;
+}
+
+.archive-document-row .text-button {
+  display: inline-flex;
+  flex: 0 0 auto;
+  padding: 8px 9px;
+  color: var(--teal);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.archive-document-row .text-button:hover {
+  background: #e9f7f4;
+  border-radius: 5px;
+}
+
+.download-button {
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  transition: background .15s ease, color .15s ease, transform .15s ease;
+}
+
+.download-button:hover {
+  background: var(--teal);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.document-archive-page .pagination {
+  margin: 0 12px;
+  padding: 18px 0 0;
+  border-top: 1px solid #eef1f1;
+}
+
+@media (max-width: 960px) {
+  .document-archive-page {
+    width: min(100% - 50px, 1380px);
+  }
+
+  .document-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .document-filters .search-box {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 700px) {
+  .document-archive-page {
+    width: calc(100% - 32px);
+    padding-top: 28px;
+  }
+
+  .archive-page-heading {
+    display: block;
+  }
+
+  .archive-page-heading h1 {
+    font-size: 27px;
+  }
+
+  .archive-heading-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-content: stretch;
+    margin-top: 18px;
+  }
+
+  .archive-total {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+
+  .archive-heading-actions .primary-button,
+  .archive-heading-actions .secondary-button {
+    width: 100%;
+  }
+
+  .document-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .document-filters .search-box {
+    grid-column: auto;
+  }
+
+  .archive-document-row {
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr) auto;
+    gap: 10px;
+    padding: 14px 4px;
+  }
+
+  .archive-document-meta {
+    display: none;
+  }
+
+  .archive-document-row .text-button {
+    grid-column: 2;
+    justify-self: start;
+    padding-left: 0;
+  }
+
+  .download-button {
+    grid-column: 3;
+    grid-row: 1;
+    align-self: center;
+  }
+
+  .archive-table-head {
+    display: block;
+    padding: 18px;
+  }
+
+  .archive-table-head small {
+    display: block;
+    margin-top: 5px;
+  }
+}

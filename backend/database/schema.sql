@@ -65,9 +65,26 @@ CREATE TABLE IF NOT EXISTS dokumen (
   ukuran_file BIGINT NOT NULL,
   uploaded_by INTEGER NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
   status VARCHAR(20) NOT NULL DEFAULT 'aktif',
+  deleted_at TIMESTAMP NULL,
+  deleted_by INTEGER NULL REFERENCES users(id) ON DELETE SET NULL,
+  deleted_reason TEXT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT dokumen_status_check CHECK (status IN ('aktif', 'arsip'))
+);
+
+CREATE TABLE IF NOT EXISTS dokumen_versions (
+  id SERIAL PRIMARY KEY,
+  dokumen_id INTEGER NOT NULL REFERENCES dokumen(id) ON DELETE CASCADE,
+  version_number INTEGER NOT NULL,
+  nama_file VARCHAR(255) NOT NULL,
+  file_path TEXT NOT NULL,
+  tipe_file VARCHAR(100),
+  ukuran_file BIGINT,
+  uploaded_by INTEGER NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
+  catatan_perubahan TEXT,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(dokumen_id, version_number)
 );
 
 CREATE TABLE IF NOT EXISTS log_aktivitas (
@@ -76,6 +93,7 @@ CREATE TABLE IF NOT EXISTS log_aktivitas (
   dokumen_id INTEGER REFERENCES dokumen(id) ON DELETE SET NULL,
   aktivitas VARCHAR(60) NOT NULL,
   deskripsi TEXT,
+  read_at TIMESTAMP NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -115,6 +133,24 @@ BEGIN
   IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'dokumen' AND column_name = 'qr_token') THEN
     ALTER TABLE dokumen ADD COLUMN qr_token VARCHAR(80) UNIQUE;
   END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'dokumen' AND column_name = 'deleted_at') THEN
+    ALTER TABLE dokumen ADD COLUMN deleted_at TIMESTAMP NULL;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'dokumen' AND column_name = 'deleted_by') THEN
+    ALTER TABLE dokumen ADD COLUMN deleted_by INTEGER NULL;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'dokumen' AND column_name = 'deleted_reason') THEN
+    ALTER TABLE dokumen ADD COLUMN deleted_reason TEXT NULL;
+  END IF;
+  IF NOT EXISTS (
+    SELECT 1
+    FROM information_schema.table_constraints
+    WHERE table_name = 'dokumen' AND constraint_name = 'dokumen_deleted_by_fkey'
+  ) THEN
+    ALTER TABLE dokumen
+      ADD CONSTRAINT dokumen_deleted_by_fkey
+      FOREIGN KEY (deleted_by) REFERENCES users(id) ON DELETE SET NULL;
+  END IF;
   UPDATE dokumen SET qr_token = md5(random()::text || clock_timestamp()::text || id::text)
   WHERE qr_token IS NULL;
 END $$;
@@ -123,4 +159,8 @@ CREATE INDEX IF NOT EXISTS dokumen_seksi_id_idx ON dokumen(seksi_id);
 CREATE INDEX IF NOT EXISTS dokumen_kategori_id_idx ON dokumen(kategori_id);
 CREATE INDEX IF NOT EXISTS dokumen_rak_id_idx ON dokumen(rak_id);
 CREATE INDEX IF NOT EXISTS dokumen_status_idx ON dokumen(status);
+CREATE INDEX IF NOT EXISTS dokumen_deleted_at_idx ON dokumen(deleted_at);
+CREATE INDEX IF NOT EXISTS dokumen_deleted_by_idx ON dokumen(deleted_by);
+CREATE INDEX IF NOT EXISTS dokumen_versions_dokumen_id_idx ON dokumen_versions(dokumen_id);
+CREATE INDEX IF NOT EXISTS dokumen_versions_created_at_idx ON dokumen_versions(created_at DESC);
 CREATE INDEX IF NOT EXISTS log_aktivitas_created_at_idx ON log_aktivitas(created_at DESC);

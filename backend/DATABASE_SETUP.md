@@ -29,6 +29,12 @@ Script membuat tabel:
 
 Data awal seksi, role `admin`/`staff`, dan kategori juga dibuat otomatis.
 
+Jika database sudah pernah dibuat sebelumnya, jalankan migration request dokumen:
+
+```cmd
+psql -U postgres -d Sistem_pengarsipan -f database\migrations\003_add_document_requests.sql
+```
+
 ## 3. Konfigurasi backend
 
 Salin `.env.example` menjadi `.env`, kemudian isi password PostgreSQL:
